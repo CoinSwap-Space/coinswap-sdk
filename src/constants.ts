@@ -19,7 +19,7 @@ export enum Rounding {
   ROUND_UP
 }
 
-export const FACTORY_ADDRESS = '0x4325a60915e4964B39922a7EFCb83C4a5B6a1AC5'
+export const FACTORY_ADDRESS = process.env.REACT_APP_CHAIN_ID === '97' ? '0x4325a60915e4964B39922a7EFCb83C4a5B6a1AC5' : ""
 
 export const INIT_CODE_HASH = '0x2e3f108b8526ff1faa4d526bb84210fc5a2bfc5aad2f62207d7964554a5d029d'
 
