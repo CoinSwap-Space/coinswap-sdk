@@ -1,5 +1,5 @@
-import { TradeType } from './constants'
 import invariant from 'tiny-invariant'
+import { TradeType } from './constants'
 import { validateAndParseAddress } from './utils'
 import { CurrencyAmount, ETHER, Percent, Trade } from './entities'
 
@@ -10,22 +10,22 @@ export interface TradeOptions {
   /**
    * How much the execution price is allowed to move unfavorably from the trade execution price.
    */
-  allowedSlippage: Percent
+  allowedSlippage: Percent;
   /**
    * How long the swap is valid until it expires, in seconds.
    * This will be used to produce a `deadline` parameter which is computed from when the swap call parameters
    * are generated.
    */
-  ttl: number
+  ttl: number;
   /**
    * The account that should receive the output of the swap.
    */
-  recipient: string
+  recipient: string;
 
   /**
    * Whether any of the tokens in the path are fee on transfer tokens, which should be handled with special methods
    */
-  feeOnTransfer?: boolean
+  feeOnTransfer?: boolean;
 }
 
 /**
@@ -35,15 +35,15 @@ export interface SwapParameters {
   /**
    * The method to call on the CoinSwap Router.
    */
-  methodName: string
+  methodName: string;
   /**
    * The arguments to pass to the method, all hex encoded.
    */
-  args: (string | string[])[]
+  args: (string | string[])[];
   /**
    * The amount of wei to send in hex.
    */
-  value: string
+  value: string;
 }
 
 function toHex(currencyAmount: CurrencyAmount) {
@@ -59,7 +59,7 @@ export abstract class Router {
   /**
    * Cannot be constructed.
    */
-  private constructor() {}
+
   /**
    * Produces the on-chain method name to call and the hex encoded parameters to pass as arguments for a given trade.
    * @param trade to produce call parameters for
@@ -75,7 +75,7 @@ export abstract class Router {
     const to: string = validateAndParseAddress(options.recipient)
     const amountIn: string = toHex(trade.maximumAmountIn(options.allowedSlippage))
     const amountOut: string = toHex(trade.minimumAmountOut(options.allowedSlippage))
-    const path: string[] = trade.route.path.map(token => token.address)
+    const path: string[] = trade.route.path.map((token) => token.address)
     const deadline = `0x${(Math.floor(new Date().getTime() / 1000) + options.ttl).toString(16)}`
     const useFeeOnTransfer = Boolean(options.feeOnTransfer)
 

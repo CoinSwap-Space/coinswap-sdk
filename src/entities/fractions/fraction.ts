@@ -1,11 +1,11 @@
+/* eslint-disable import/prefer-default-export */
 import invariant from 'tiny-invariant'
 import JSBI from 'jsbi'
 import _Decimal from 'decimal.js-light'
 import _Big, { RoundingMode } from 'big.js'
 import toFormat from 'toformat'
 
-import { BigintIsh, Rounding } from '../../constants'
-import { ONE } from '../../constants'
+import { BigintIsh, Rounding, ONE } from '../../constants'
 import { parseBigintIsh } from '../../utils'
 
 const Decimal = toFormat(_Decimal)
@@ -25,6 +25,7 @@ const toFixedRounding = {
 
 export class Fraction {
   public readonly numerator: JSBI
+
   public readonly denominator: JSBI
 
   public constructor(numerator: BigintIsh, denominator: BigintIsh = ONE) {

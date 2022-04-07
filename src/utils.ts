@@ -12,13 +12,14 @@ export function validateSolidityTypeInstance(value: JSBI, solidityType: Solidity
 
 // warns if addresses are not checksummed
 export function validateAndParseAddress(address: string): string {
+  let checksummedAddress = ''
   try {
-    const checksummedAddress = getAddress(address)
+    checksummedAddress = getAddress(address)
     warning(address === checksummedAddress, `${address} is not checksummed.`)
-    return checksummedAddress
   } catch (error) {
     invariant(false, `${address} is not a valid address.`)
   }
+  return checksummedAddress
 }
 
 export function parseBigintIsh(bigintIsh: BigintIsh): JSBI {
@@ -58,25 +59,24 @@ export function sortedInsert<T>(items: T[], add: T, maxSize: number, comparator:
   if (items.length === 0) {
     items.push(add)
     return null
-  } else {
-    const isFull = items.length === maxSize
-    // short circuit if full and the additional item does not come before the last item
-    if (isFull && comparator(items[items.length - 1], add) <= 0) {
-      return add
-    }
-
-    let lo = 0,
-      hi = items.length
-
-    while (lo < hi) {
-      const mid = (lo + hi) >>> 1
-      if (comparator(items[mid], add) <= 0) {
-        lo = mid + 1
-      } else {
-        hi = mid
-      }
-    }
-    items.splice(lo, 0, add)
-    return isFull ? items.pop()! : null
   }
+  const isFull = items.length === maxSize
+  // short circuit if full and the additional item does not come before the last item
+  if (isFull && comparator(items[items.length - 1], add) <= 0) {
+    return add
+  }
+
+  let lo = 0
+  let hi = items.length
+
+  while (lo < hi) {
+    const mid = (lo + hi) >>> 1
+    if (comparator(items[mid], add) <= 0) {
+      lo = mid + 1
+    } else {
+      hi = mid
+    }
+  }
+  items.splice(lo, 0, add)
+  return isFull ? items.pop()! : null
 }
