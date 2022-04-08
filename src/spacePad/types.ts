@@ -26,13 +26,13 @@ export interface SpacePad {
   contractAddress?: string;
   extensions?: RequiredField[];
   skipWhitelist?: boolean;
-  finalResult?: number;
 }
 export interface SpaceRound {
   roundDesc: string;
   round: number;
   ratioToCapToken: number;
   collectedFunds?: number;
+  finalResult?: number;
   tiers: Tier[];
   declarationStartBlock: number;
   declarationEndBlock: number;
