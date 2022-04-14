@@ -1,8 +1,7 @@
-import { Token } from '../token'
-import { TokenAmount } from './tokenAmount'
-import { currencyEquals } from '../token'
 import invariant from 'tiny-invariant'
 import JSBI from 'jsbi'
+import { Token, currencyEquals } from '../token'
+import { TokenAmount } from './tokenAmount'
 
 import { BigintIsh, Rounding, TEN } from '../../constants'
 import { Currency } from '../currency'
@@ -12,7 +11,9 @@ import { CurrencyAmount } from './currencyAmount'
 
 export class Price extends Fraction {
   public readonly baseCurrency: Currency // input i.e. denominator
+
   public readonly quoteCurrency: Currency // output i.e. numerator
+
   public readonly scalar: Fraction // used to adjust the raw fraction w/r/t the decimals of the {base,quote}Token
 
   public static fromRoute(route: Route): Price {
@@ -66,11 +67,11 @@ export class Price extends Fraction {
     return CurrencyAmount.ether(super.multiply(currencyAmount.raw).quotient)
   }
 
-  public toSignificant(significantDigits: number = 6, format?: object, rounding?: Rounding): string {
+  public toSignificant(significantDigits = 6, format?: object, rounding?: Rounding): string {
     return this.adjusted.toSignificant(significantDigits, format, rounding)
   }
 
-  public toFixed(decimalPlaces: number = 4, format?: object, rounding?: Rounding): string {
+  public toFixed(decimalPlaces = 4, format?: object, rounding?: Rounding): string {
     return this.adjusted.toFixed(decimalPlaces, format, rounding)
   }
 }
