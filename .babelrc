@@ -1,3 +1,11 @@
 {
-  "plugins": [] // "transform-jsbi-to-bigint"
+  "presets": [
+    ["@babel/preset-env", {
+      "targets": {
+        "node": "18"
+      },
+      "modules": false
+    }]
+  ],
+  "plugins": []
 }

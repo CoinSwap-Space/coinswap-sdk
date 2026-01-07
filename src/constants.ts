@@ -19,7 +19,24 @@ export enum Rounding {
   ROUND_UP
 }
 
-export const FACTORY_ADDRESS = process.env.REACT_APP_CHAIN_ID === '97' ? '0x4325a60915e4964B39922a7EFCb83C4a5B6a1AC5' : "0xC2D8d27F3196D9989aBf366230a47384010440c0"
+// Contract addresses by chain
+export const FACTORY_ADDRESS: { [chainId in ChainId]: string } = {
+  [ChainId.MAINNET]: '0xC2D8d27F3196D9989aBf366230a47384010440c0',
+  [ChainId.BSCTESTNET]: '0x4325a60915e4964B39922a7EFCb83C4a5B6a1AC5'
+}
+
+export const MASTERCHEF_ADDRESS: { [chainId in ChainId]: string } = {
+  [ChainId.MAINNET]: '0x3A0a988D680dBBB02DECBfd35F9E0676B4bEc292',
+  [ChainId.BSCTESTNET]: '0xf34CA3A71Cd10D19F5E869275Cd2d3044142A1fC'
+}
+
+export const ROUTER_ADDRESS: { [chainId in ChainId]: string } = {
+  [ChainId.MAINNET]: '0x34DBe8E5faefaBF5018c16822e4d86F02d57Ec27',
+  [ChainId.BSCTESTNET]: '0x8D0c01c0D07B1Df2c149d67269a068773bbD85b8'
+}
+
+// Legacy export for backward compatibility (uses MAINNET by default)
+export const FACTORY_ADDRESS_LEGACY = FACTORY_ADDRESS[ChainId.MAINNET]
 
 export const INIT_CODE_HASH = '0x2e3f108b8526ff1faa4d526bb84210fc5a2bfc5aad2f62207d7964554a5d029d'
 

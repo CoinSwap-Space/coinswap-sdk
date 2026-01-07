@@ -1,9 +1,7 @@
-import { Contract } from '@ethersproject/contracts'
-import { getNetwork } from '@ethersproject/networks'
-import { getDefaultProvider } from '@ethersproject/providers'
+import { Contract, getDefaultProvider } from 'ethers'
 import { TokenAmount } from './entities/fractions/tokenAmount'
 import { Pair } from './entities/pair'
-import ICoinSwapPair from '@coinswap-libs/swap-core/build/ICoinSwapPair.json'
+import ICoinSwapPair from './abis/ICoinSwapPair.json'
 import invariant from 'tiny-invariant'
 import ERC20 from './abis/ERC20.json'
 import { ChainId } from './constants'
@@ -35,18 +33,21 @@ export abstract class Fetcher {
   public static async fetchTokenData(
     chainId: ChainId,
     address: string,
-    provider = getDefaultProvider(getNetwork(chainId)),
+    provider = getDefaultProvider(chainId),
     symbol?: string,
     name?: string
   ): Promise<Token> {
+    const chainCache = TOKEN_DECIMALS_CACHE[chainId]
+    const cachedDecimals = chainCache && chainCache[address]
+    
     const parsedDecimals =
-      typeof TOKEN_DECIMALS_CACHE?.[chainId]?.[address] === 'number'
-        ? TOKEN_DECIMALS_CACHE[chainId][address]
+      typeof cachedDecimals === 'number'
+        ? cachedDecimals
         : await new Contract(address, ERC20, provider).decimals().then((decimals: number): number => {
           TOKEN_DECIMALS_CACHE = {
             ...TOKEN_DECIMALS_CACHE,
             [chainId]: {
-              ...TOKEN_DECIMALS_CACHE?.[chainId],
+              ...(chainCache || {}),
               [address]: decimals
             }
           }
@@ -64,11 +65,12 @@ export abstract class Fetcher {
   public static async fetchPairData(
     tokenA: Token,
     tokenB: Token,
-    provider = getDefaultProvider(getNetwork(tokenA.chainId))
+    provider = getDefaultProvider(tokenA.chainId)
   ): Promise<Pair> {
     invariant(tokenA.chainId === tokenB.chainId, 'CHAIN_ID')
     const address = Pair.getAddress(tokenA, tokenB)
-    const [reserves0, reserves1] = await new Contract(address, ICoinSwapPair.abi, provider).getReserves()
+    const contract = new Contract(address, ICoinSwapPair as any, provider)
+    const [reserves0, reserves1] = await contract.getReserves()
     const balances = tokenA.sortsBefore(tokenB) ? [reserves0, reserves1] : [reserves1, reserves0]
     return new Pair(new TokenAmount(tokenA, balances[0]), new TokenAmount(tokenB, balances[1]))
   }

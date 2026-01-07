@@ -1,7 +1,7 @@
 import invariant from 'tiny-invariant'
 import JSBI from 'jsbi'
 import _Decimal from 'decimal.js-light'
-import _Big, { RoundingMode } from 'big.js'
+import _Big from 'big.js'
 import toFormat from 'toformat'
 
 import { BigintIsh, Rounding } from '../../constants'
@@ -17,10 +17,11 @@ const toSignificantRounding = {
   [Rounding.ROUND_UP]: Decimal.ROUND_UP
 }
 
-const toFixedRounding = {
-  [Rounding.ROUND_DOWN]: RoundingMode.RoundDown,
-  [Rounding.ROUND_HALF_UP]: RoundingMode.RoundHalfUp,
-  [Rounding.ROUND_UP]: RoundingMode.RoundUp
+// big.js v6 uses numeric values: 0 = RoundDown, 1 = RoundHalfUp, 2 = RoundUp
+const toFixedRounding: { [key in Rounding]: number } = {
+  [Rounding.ROUND_DOWN]: 0,
+  [Rounding.ROUND_HALF_UP]: 1,
+  [Rounding.ROUND_UP]: 2
 }
 
 export class Fraction {
